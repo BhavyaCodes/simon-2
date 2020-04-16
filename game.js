@@ -33,7 +33,7 @@ var gameState = false;
 var level = 0;
 var userClickedPattern=[];      //pattern by user
 var gamePattern = [];           //correct pattern
-var over = false;
+var over = false;     //for red background and sound effect after game over
 
 var i = 0;     //used in loop
 
@@ -47,7 +47,7 @@ function nextSquence(){
   $('h1').text("Level "+level);
 }
 
-function gameOver(){
+function gameOver(){          //gameOver
   wrong.play();
   $('body').addClass('game-over');
   setTimeout(function () {
@@ -89,7 +89,7 @@ $('.btn').click(function(event){
     }
   }
 
-  if ((userClickedPattern.length === gamePattern.length) && (gameState === true)){
+  if ((userClickedPattern.length === gamePattern.length) && (gameState === true)){    //level up
     setTimeout( nextSquence , 800);
     userClickedPattern = [];
   }
