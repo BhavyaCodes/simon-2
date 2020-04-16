@@ -16,6 +16,7 @@ var blueSound = new Audio('sounds/blue.mp3');
 var greenSound = new Audio('sounds/green.mp3');
 var redSound = new Audio('sounds/red.mp3');
 var yellowSound = new Audio('sounds/yellow.mp3');
+var wrong = new Audio('sounds/wrong.mp3');
 
 //boxes
 var blueBox = new ColourBox("blue", blueSound, $(".blue"));
@@ -32,6 +33,7 @@ var gameState = false;
 var level = 0;
 var userClickedPattern=[];      //pattern by user
 var gamePattern = [];           //correct pattern
+var over = false;
 
 var i = 0;     //used in loop
 
@@ -45,15 +47,58 @@ function nextSquence(){
   $('h1').text("Level "+level);
 }
 
+function gameOver(){
+  wrong.play();
+  $('body').addClass('game-over');
+  setTimeout(function () {
+    $('body').removeClass('game-over');
+  }, 500);
+  level = 0;
+  gameState = false;
+  over = true;
+  userClickedPattern=[];
+  gamePattern = [];
+  $('h1').text('Game Over, Press Any Key to Restart');
+}
 
 $('.btn').click(function(event){
   //console.log(this.id);
-  for(i=0; i <4 ; i++){
-  if (this.id === buttons[i].colour){             //check object using id(colour string)
-    buttons[i].soundAndAnimation();
-    userClickedPattern.push(buttons[i].colour);
-    console.log('userClickedPattern: '+userClickedPattern);
-    break;
+  if (gameState === true){
+    for(i=0; i <4 ; i++){
+    if (this.id === buttons[i].colour){             //check object using id(colour string)
+      buttons[i].soundAndAnimation();
+      userClickedPattern.push(buttons[i].colour);
+      console.log('userClickedPattern: '+userClickedPattern);
+      break;
+    }
+    }
   }
+  if (over === true){                 //clicking button when game over
+    $('body').addClass('game-over');
+    setTimeout(function () {
+      $('body').removeClass('game-over');
+    }, 500);
+    wrong.play();
+  }
+
+  for (i=0; i <userClickedPattern.length; i++){
+    if (userClickedPattern[i] !== gamePattern[i]){        //wrong move condition = game over
+
+      gameOver();
+      console.log("i = "+i+" , userClickedPattern = "+userClickedPattern+" , gamePattern = "+gamePattern,);
+    }
+  }
+
+  if ((userClickedPattern.length === gamePattern.length) && (gameState === true)){
+    setTimeout( nextSquence , 800);
+    userClickedPattern = [];
+  }
+});
+
+$(document).keydown(function(){         //start game
+  if (gameState === false){
+    gameState = true;
+    over = false;
+    nextSquence();
   }
 });
